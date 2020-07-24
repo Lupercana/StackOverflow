@@ -13,8 +13,8 @@ public class Controller_Player : MonoBehaviour
     [SerializeField] private float run_speed = 0f;
     [SerializeField] private float fly_speed = 0f;
 
-    private float move_x = 0f;
-    private float move_y = 0f;
+    private float move_forward = 0f;
+    private float move_lateral = 0f;
     private float jump = 0f;
     private float move_speed = 0f;
 
@@ -27,8 +27,8 @@ public class Controller_Player : MonoBehaviour
     private void Update()
     {
         // Movement Inputs
-        move_x = Input.GetAxis("Vertical");
-        move_y = Input.GetAxis("Horizontal");
+        move_forward = Input.GetAxis("Vertical");
+        move_lateral = Input.GetAxis("Horizontal");
         jump = Input.GetAxis("Jump");
         if (Input.GetButton("Run"))
         {
@@ -51,8 +51,12 @@ public class Controller_Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        self_rbody.AddForce(transform.forward * move_x * move_speed * Time.fixedDeltaTime, ForceMode.Force);
-        self_rbody.AddForce(transform.right * move_y * move_speed * Time.fixedDeltaTime, ForceMode.Force);
+        Vector3 movement_forward = transform.forward;
+        Vector3 movement_lateral = transform.right;
+        movement_forward.y = 0;
+        movement_lateral.y = 0;
+
+        self_rbody.AddForce((movement_forward.normalized * move_forward + movement_lateral.normalized * move_lateral).normalized * move_speed * Time.fixedDeltaTime, ForceMode.Force);
         self_rbody.AddForce(Vector3.up * jump * fly_speed * Time.fixedDeltaTime, ForceMode.Force);
     }
 }

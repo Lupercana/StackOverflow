@@ -50,7 +50,7 @@ public class Behavior_Player_Hands : MonoBehaviour
         if (other.tag == "Digit")
         {
             ref_in_trigger = null;
-            other.GetComponent<Renderer>().material.color = Color.gray;
+            other.GetComponent<Renderer>().material.color = Color.white;
         }
     }
 }
