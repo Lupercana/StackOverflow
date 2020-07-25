@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Digit
   - Platform
+  - Cart
   layers:
   - Default
   - TransparentFX

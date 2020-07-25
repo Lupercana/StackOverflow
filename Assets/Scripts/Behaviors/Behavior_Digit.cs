@@ -20,6 +20,7 @@ public class Behavior_Digit : MonoBehaviour
     [SerializeField] private Color color_valid = Color.black;
     [SerializeField] private Color color_invalid = Color.black;
     [SerializeField] private Operator op = Operator.invalid;
+    [SerializeField] private float height_thresh = 0f;
     [SerializeField] private int value = 0;
     [SerializeField] private bool is_value = true;
     [SerializeField] private bool update = false;
@@ -78,10 +79,9 @@ public class Behavior_Digit : MonoBehaviour
 
     public void UpdateTotal()
     {
-        int starting_total = total;
-
         // Defaults
         total = is_value ? value : 0;
+        valid_state = true;
 
         if (script_digit_upper != null)
         {
@@ -90,13 +90,11 @@ public class Behavior_Digit : MonoBehaviour
             {
                 // Above block is value and current block is operator, transfer total
                 valid_op = true;
-                valid_state = true;
                 total = script_digit_upper.GetTotal();
             }
             else if (!script_digit_upper.GetIsValue() && is_value && upper_op != Operator.invalid)
             {
                 // Above block is operator and current block is value, perform operation and calculate new total
-                valid_state = true;
                 total = ApplyOperation(upper_op, script_digit_upper.GetTotal(), value);
             }
             else // Invalid placement
@@ -110,7 +108,7 @@ public class Behavior_Digit : MonoBehaviour
         }
 
         // Update lower block's total if exists
-        if (script_digit_lower != null && starting_total != total)
+        if (script_digit_lower != null)
         {
             script_digit_lower.UpdateTotal();
         }
@@ -160,12 +158,12 @@ public class Behavior_Digit : MonoBehaviour
         if (collision.collider.tag == "Digit")
         {
             Transform t = collision.transform;
-            if (t.position.y > transform.position.y && script_digit_upper == null)
+            if (t.position.y > (transform.position.y + height_thresh) && script_digit_upper == null)
             {
                 script_digit_upper = collision.gameObject.GetComponent<Behavior_Digit>();
                 UpdateTotal();
             }
-            else if (t.position.y < transform.position.y && script_digit_lower == null)
+            else if (t.position.y < (transform.position.y - height_thresh) && script_digit_lower == null)
             {
                 script_digit_lower = collision.gameObject.GetComponent<Behavior_Digit>();
                 UpdateTotal();
@@ -181,13 +179,11 @@ public class Behavior_Digit : MonoBehaviour
             {
                 script_digit_upper = null;
                 valid_op = false;
-                valid_state = true;
                 UpdateTotal();
             }
             else if (script_digit_lower != null && collision.gameObject.GetInstanceID() == script_digit_lower.gameObject.GetInstanceID())
             {
                 script_digit_lower = null;
-                valid_state = true;
                 UpdateTotal();
             }
         }

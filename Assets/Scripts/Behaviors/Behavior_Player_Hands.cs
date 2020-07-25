@@ -35,23 +35,43 @@ public class Behavior_Player_Hands : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.tag == "Digit" && ref_in_trigger == null)
+        if (other.tag == "Digit")
         {
-            ref_in_trigger = other.gameObject;
-
-            if (ref_held == null)
+            if (ref_in_trigger == null)
+            {
+                ref_in_trigger = other.gameObject;
+            }
+            if (other.gameObject.GetInstanceID() == ref_in_trigger.GetInstanceID())
             {
                 other.gameObject.GetComponent<Behavior_Digit>().SetColor(color_select);
+            }
+        }
+        else if (other.tag == "Cart")
+        {
+            if (ref_in_trigger == null)
+            {
+                ref_in_trigger = other.gameObject;
+            }
+            if (other.gameObject.GetInstanceID() == ref_in_trigger.GetInstanceID())
+            {
+                other.gameObject.GetComponent<Behavior_Cart>().SetColor(color_select);
             }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag == "Digit" && ref_in_trigger != null && other.gameObject.GetInstanceID() == ref_in_trigger.gameObject.GetInstanceID())
+        if ((other.tag == "Digit" || other.tag == "Cart") && ref_in_trigger != null && other.gameObject.GetInstanceID() == ref_in_trigger.gameObject.GetInstanceID())
         {
             ref_in_trigger = null;
-            other.gameObject.GetComponent<Behavior_Digit>().UpdateColor();
+            if (other.tag == "Digit")
+            {
+                other.gameObject.GetComponent<Behavior_Digit>().UpdateColor();
+            }
+            else if (other.tag == "Cart")
+            {
+                other.gameObject.GetComponent<Behavior_Cart>().ResetColor();
+            }
         }
     }
 }

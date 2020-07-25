@@ -16,8 +16,10 @@ public class Behavior_Manager : MonoBehaviour
     [SerializeField] private int level = 0;
     [SerializeField] private int random_val_min = 0;
     [SerializeField] private int random_val_max = 1;
+    [SerializeField] private int difficulty_raise_max = 1;
     [SerializeField] private int difficulty_raise_operations = 1;
     [SerializeField] private int difficulty_raise_platforms = 1;
+    [SerializeField] private int difficulty_level_thresh_mult_op = 1;
     [SerializeField] private int difficulty_level_thresh_power_op = 1;
 
     private float start_time = 0f;
@@ -48,6 +50,7 @@ public class Behavior_Manager : MonoBehaviour
         if (elasped_time > level_time_seconds)
         {
             // Proceed to lose screen
+            Behavior_State.Instance.state_level = level;
             Cursor.lockState = CursorLockMode.None;
             SceneManager.LoadScene(scene_lose.name);
         }
@@ -58,6 +61,7 @@ public class Behavior_Manager : MonoBehaviour
     {
         // Update level
         ++level;
+        uncompleted_platforms = 0;
         ref_text_level.text = "Level " + level.ToString();
 
         // Destroy all cubes
@@ -73,6 +77,8 @@ public class Behavior_Manager : MonoBehaviour
         int platforms_used = ((level - 1) / difficulty_raise_platforms) + 1;
         platforms_used = (platforms_used <= script_platforms.Length) ? platforms_used : script_platforms.Length;
 
+        int max_inc = (level - 1) / difficulty_raise_max;
+
         // Update platforms and calculate cubes
         List<Behavior_Digit.Operator> digit_ops = new List<Behavior_Digit.Operator>();
         List<int> digit_values = new List<int>();
@@ -81,11 +87,11 @@ public class Behavior_Manager : MonoBehaviour
             if (i < platforms_used) // Platform in use
             {
                 // Generate valid equation
-                int total = Random.Range(random_val_min, random_val_max);
+                int total = Random.Range(random_val_min, random_val_max + max_inc);
                 digit_values.Add(total);
                 for (int j = 0; j < operations_used; ++j)
                 {
-                    int value = Random.Range(random_val_min, random_val_max);
+                    int value = Random.Range(random_val_min, random_val_max + max_inc);
                     digit_values.Add(value);
                     Behavior_Digit.Operator op = RandomOperator();
                     digit_ops.Add(op);
@@ -94,6 +100,7 @@ public class Behavior_Manager : MonoBehaviour
                 }
 
                 script_platforms[i].Reset(total, true);
+                ++uncompleted_platforms;
             }
             else // Platform not in use
             {
@@ -121,6 +128,10 @@ public class Behavior_Manager : MonoBehaviour
         if (level < difficulty_level_thresh_power_op)
         {
             --total_ops; // Assume power op is last in enum
+        }
+        if (level < difficulty_level_thresh_mult_op)
+        {
+            --total_ops; // Assume mult op is second last in enum
         }
 
         return (Behavior_Digit.Operator) Random.Range(0, total_ops);
