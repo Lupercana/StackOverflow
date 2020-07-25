@@ -6,15 +6,16 @@ public class Behavior_Digit : MonoBehaviour
 {
     public enum Operator
     {
-        invalid,
         add,
         subtract,
         multiply,
-        power
+        power,
+        invalid // Can be used to check number of valid operations when casted to int
     };
 
     [SerializeField] private Renderer ref_renderer = null;
     [SerializeField] private TextMesh[] ref_text_digits = null;
+    [SerializeField] private GameObject[] ref_underscores = null; // For 6 and 9 differentiation
 
     [SerializeField] private Color color_valid = Color.black;
     [SerializeField] private Color color_invalid = Color.black;
@@ -36,16 +37,24 @@ public class Behavior_Digit : MonoBehaviour
 
     public void SetValidState(bool vs) { valid_state = vs; }
 
-    public void SetValue(Operator o)
+    public void Initialize(Operator o)
     {
         op = o;
         is_value = false;
         update = true;
     }
 
-    public void SetValue(int v)
+    public void Initialize(int v)
     {
         value = v;
+        if (v == 6 || v == 9)
+        {
+            foreach (GameObject go in ref_underscores)
+            {
+                go.SetActive(true);
+            }
+        }
+
         is_value = true;
         update = true;
     }
@@ -109,10 +118,31 @@ public class Behavior_Digit : MonoBehaviour
         UpdateColor();
     }
 
+    public static int ApplyOperation(Operator op, int x, int y)
+    {
+        switch (op)
+        {
+            case Operator.add:
+                return x + y;
+            case Operator.subtract:
+                return x - y;
+            case Operator.multiply:
+                return x * y;
+            case Operator.power:
+                return x ^ y;
+        }
+
+        return 0;
+    }
+
+    private void Awake()
+    {
+        color_original = ref_renderer.material.color;
+    }
+
     private void Start()
     {
         total = is_value ? value : 0;
-        color_original = ref_renderer.material.color;
     }
 
     private void Update()
@@ -161,23 +191,6 @@ public class Behavior_Digit : MonoBehaviour
                 UpdateTotal();
             }
         }
-    }
-
-    private int ApplyOperation(Operator op, int x, int y)
-    {
-        switch (op)
-        {
-            case Operator.add:
-                return x + y;
-            case Operator.subtract:
-                return x - y;
-            case Operator.multiply:
-                return x * y;
-            case Operator.power:
-                return x ^ y;
-        }
-
-        return 0;
     }
 
     private void SetVisuals()

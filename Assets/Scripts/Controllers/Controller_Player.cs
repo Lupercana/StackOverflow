@@ -18,12 +18,6 @@ public class Controller_Player : MonoBehaviour
     private float jump = 0f;
     private float move_speed = 0f;
 
-    private void Start()
-    {
-        // Hide cursor
-        Cursor.lockState = CursorLockMode.Locked;
-    }
-
     private void Update()
     {
         // Movement Inputs
