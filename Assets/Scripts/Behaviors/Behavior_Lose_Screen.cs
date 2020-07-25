@@ -7,7 +7,6 @@ using UnityEngine.UI;
 public class Behavior_Lose_Screen : MonoBehaviour
 {
     [SerializeField] private Text ref_text_level = null;
-    [SerializeField] private Object scene_main = null;
 
     private void Start()
     {
@@ -16,6 +15,6 @@ public class Behavior_Lose_Screen : MonoBehaviour
 
     public void OnRetry()
     {
-        SceneManager.LoadScene(scene_main.name);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
     }
 }

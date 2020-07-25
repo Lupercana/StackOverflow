@@ -10,7 +10,6 @@ public class Behavior_Manager : MonoBehaviour
     [SerializeField] private Slider ref_slider_timer = null;
     [SerializeField] private Behavior_Spawner script_spawner = null;
     [SerializeField] private Behavior_Platform[] script_platforms = null;
-    [SerializeField] private Object scene_lose = null;
 
     [SerializeField] private float level_time_seconds = 0f;
     [SerializeField] private int level = 0;
@@ -52,7 +51,7 @@ public class Behavior_Manager : MonoBehaviour
             // Proceed to lose screen
             Behavior_State.Instance.state_level = level;
             Cursor.lockState = CursorLockMode.None;
-            SceneManager.LoadScene(scene_lose.name);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
         ref_slider_timer.value = 1f - (elasped_time / level_time_seconds);
     }

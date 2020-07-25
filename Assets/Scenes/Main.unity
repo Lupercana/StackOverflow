@@ -375,12 +375,12 @@ PrefabInstance:
     - target: {fileID: 6595815506553742945, guid: 3e7573a1daf2b4a42a7c5cf46187a6a0,
         type: 3}
       propertyPath: look_sensitivity_x
-      value: 100
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 6595815506553742945, guid: 3e7573a1daf2b4a42a7c5cf46187a6a0,
         type: 3}
       propertyPath: look_sensitivity_y
-      value: 100
+      value: 25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3e7573a1daf2b4a42a7c5cf46187a6a0, type: 3}
@@ -484,6 +484,10 @@ PrefabInstance:
       propertyPath: script_platforms.Array.data[4]
       value: 
       objectReference: {fileID: 1859769845}
+    - target: {fileID: 739772601, guid: 5c874fe6a97fafd4ca568c11921ebff6, type: 3}
+      propertyPath: level_time_seconds
+      value: 120
+      objectReference: {fileID: 0}
     - target: {fileID: 1362614557, guid: 5c874fe6a97fafd4ca568c11921ebff6, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
