@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Behavior_Player_Hands : MonoBehaviour
 {
-    [SerializeField] private GameObject ref_held = null;
+    [SerializeField] private Color color_select = Color.black;
 
+    private GameObject ref_held = null;
     private GameObject ref_in_trigger = null;
 
     public void Grab()
@@ -34,23 +35,23 @@ public class Behavior_Player_Hands : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.tag == "Digit")
+        if (other.tag == "Digit" && ref_in_trigger == null)
         {
             ref_in_trigger = other.gameObject;
 
             if (ref_held == null)
             {
-                other.GetComponent<Renderer>().material.color = Color.green;
+                other.gameObject.GetComponent<Behavior_Digit>().SetColor(color_select);
             }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag == "Digit")
+        if (other.tag == "Digit" && ref_in_trigger != null && other.gameObject.GetInstanceID() == ref_in_trigger.gameObject.GetInstanceID())
         {
             ref_in_trigger = null;
-            other.GetComponent<Renderer>().material.color = Color.white;
+            other.gameObject.GetComponent<Behavior_Digit>().UpdateColor();
         }
     }
 }
